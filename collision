@@ -1,0 +1,107 @@
+width = 700;
+height = 700;
+class ball:
+    def __init__(self, xpos,ypos,xspeed,yspeed,col):
+        self.x = xpos;
+        self.y = ypos;
+        self.xspeed = xspeed;
+        self.yspeed = yspeed;
+        self.col = col;
+        
+    def update(self):
+        if self.x > width:
+            self.x =1;
+        if self.y > height:
+            self.y = 1;
+        if self.x < 0:
+            self.x =width-1;
+        if self.y < 0:
+            self.y = height-1;
+        self.x = self.x + self.xspeed;
+        self.y =self.y + self.yspeed;
+        
+    def display(self):
+        fill(self.col);
+        rectMode(CENTER);
+        rect(self.x, self.y , 20,20);
+    
+#b1 = ball(10,50,5,0,color(0,255,0));
+#b2 = ball(600,50,-5,0,color(0,0,255));
+balls = [];
+#balls.append(b1);
+#balls.append(b2);
+def setup():
+    size(height,width);
+    background(255);
+    #frameRate(10);
+
+ballspos = []
+
+def currepos():
+    ballspos = []
+    for b in range(len(balls)):
+        topLeft = ((int(balls[b].x)), int((balls[b].y)))
+        bottomRight = ((int(balls[b].x))+20, int((balls[b].y))-20)
+        oppcorners = (topLeft,bottomRight)
+        ballspos.append(oppcorners) 
+    return ballspos
+
+#stores postions of every ball as a tuple of tuples, containing coords for opposite corners
+
+def draw():
+    background(255)
+    #if b1.x == b2.x and b1.y == b2.y :
+     #   print("collided");
+    if mousePressed:
+        balls.append( ball(mouseX,mouseY,random(-10,10),random(-10,10), color(random(0,255),random(0,255),random(0,255))));
+        
+    for i in range(len(balls)):
+        balls[i].display();
+        balls[i].update();
+    
+    pos = currepos()
+    
+    for i in range(len(pos)):
+        for j in range(len(pos)):
+            
+            
+            leftx   = pos[i][0][0] - 25
+            lefty   = pos[i][0][1] - 25
+            rightx = pos[i][1][0] + 25
+            righty = pos[i][1][1] + 25
+            # getting the postion of both corners and expanding to postions diagonally away from the centre
+            
+            dinXband = False
+            dinYband = False
+            ainXband = False
+            ainYband = False
+            
+            #d and a refer to the coords of the ball we are checking, d is right and a is left.
+            #I use band to mean the region bound by the inequality aX < region < dX, this will be a vertical band
+            #that contains the 'ball' (called ball actually a rectangle)
+            
+            if pos[j][0][0] >= leftx and pos[j][0][0] <= rightx:
+                ainXband = True
+            if pos[j][0][1] >= lefty and pos[j][0][1] <= righty:
+                ainYband = True
+            if pos[j][1][0] >= leftx and pos[j][1][0] <= rightx:
+                dinXband = True
+            if pos[j][1][1] >= lefty and pos[j][1][1] <= righty:
+                dinYband = True
+            if i == j or i > j:
+                pass
+            elif ainXband and ainYband and dinXband and dinYband:
+                print('arrrgghfdsfdasfadsfsdfasd')
+                print(str(i) + 'and for j' + str(j))
+                print(pos[i] + pos[j])
+                balls[i].xspeed = balls[i].xspeed * -1
+                balls[i].yspeed = balls[i].yspeed * -1
+                balls[j].xspeed = 0
+                balls[j].yspeed = 0
+            else:
+                pass
+                
+            #the logic is that both corners have to be in both bands to collide
+        
+
+    
