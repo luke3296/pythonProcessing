@@ -38,13 +38,29 @@ ballspos = []
 def currepos():
     ballspos = []
     for b in range(len(balls)):
-        topLeft = ((int(balls[b].x)), int((balls[b].y)))
-        bottomRight = ((int(balls[b].x))+20, int((balls[b].y))-20)
+        topLeft = ((int(balls[b].x))-10, int((balls[b].y))-10)
+        bottomRight = ((int(balls[b].x))+10, int((balls[b].y))+10)
         oppcorners = (topLeft,bottomRight)
         ballspos.append(oppcorners) 
     return ballspos
 
 #stores postions of every ball as a tuple of tuples, containing coords for opposite corners
+
+def debug():
+    for i in range(len(balls)):
+        stroke(255,0,0)
+        first = balls[i].x
+        seond = balls[i].y
+        third = balls[i].x + balls[i].xspeed*10
+        fourth= balls[i].y + balls[i].yspeed*10
+        line(first,seond,third,fourth)
+    
+    for i in range(len(balls)):
+        noFill();
+        stroke(balls[i].col)
+        rectMode(CENTER);
+        rect(balls[i].x, balls[i].y, 60,60);
+        
 
 def draw():
     background(255)
@@ -53,20 +69,23 @@ def draw():
     if mousePressed:
         balls.append( ball(mouseX,mouseY,random(-10,10),random(-10,10), color(random(0,255),random(0,255),random(0,255))));
         
+    
     for i in range(len(balls)):
         balls[i].display();
         balls[i].update();
-    
+
+
+    #debug()
     pos = currepos()
     
     for i in range(len(pos)):
         for j in range(len(pos)):
             
             
-            leftx   = pos[i][0][0] - 25
-            lefty   = pos[i][0][1] - 25
-            rightx = pos[i][1][0] + 25
-            righty = pos[i][1][1] + 25
+            leftx   = pos[i][0][0] - 20
+            lefty   = pos[i][0][1] - 20
+            rightx = pos[i][1][0] + 20
+            righty = pos[i][1][1] + 20
             # getting the postion of both corners and expanding to postions diagonally away from the centre
             
             dinXband = False
@@ -96,17 +115,21 @@ def draw():
                 print(pos[i] + pos[j])
                 preix = balls[i].yspeed
                 preiy = balls[i].xspeed
-                balls[i].xspeed = balls[j].yspeed * -1
-                balls[i].yspeed = balls[j].xspeed * -1
-                balls[j].xspeed = preix * -1
-                balls[j].yspeed = preiy * -1
+                balls[i].xspeed = balls[j].yspeed
+                balls[i].yspeed = balls[j].xspeed
+                balls[j].xspeed = preix
+                balls[j].yspeed = preiy
+                
+                balls[i].x += 1
+                balls[j].x -= 1
+                balls[i].y += 1
+                balls[j].y -= 1
                 #for perfect reflections; elastic collision
                 
             else:
                 pass
+    
                 
             #the logic is that both corners have to be in both bands to collide
-    
-        
-
+   
     
