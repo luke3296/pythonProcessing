@@ -44,7 +44,7 @@ a = ball(0,0,5,5,color(12,23,34));
 def setup():
     background(209);
     size(width,height);
-    #frameRate(10);
+    frameRate(15);
 def draw():
     background(209);
     if mousePressed:
