@@ -1,12 +1,13 @@
 width = 700;
 height = 700;
 class ball:
-    def __init__(self, xpos,ypos,xspeed,yspeed,col):
+    def __init__(self, xpos,ypos,xspeed,yspeed,col,mass):
         self.x = xpos;
         self.y = ypos;
         self.xspeed = xspeed;
         self.yspeed = yspeed;
         self.col = col;
+        self.mass = mass;
         
     def update(self):
         if self.x > width:
@@ -67,7 +68,7 @@ def draw():
     #comment out above line to show trails
 
     if mousePressed:
-        balls.append( ball(mouseX,mouseY,random(-10,10),random(-10,10), color(random(0,255),random(0,255),random(0,255))));
+        balls.append( ball(mouseX,mouseY,random(-10,10),random(-10,10), color(random(0,255),random(0,255),random(0,255)),random(1,20)));
         
     
     for i in range(len(balls)):
@@ -112,24 +113,37 @@ def draw():
             
             elif ainXband and ainYband and dinXband and dinYband:
                 print('ball: ' + str(i) + ' and ball: ' + str(j))
-                print(pos[i] + pos[j])
-                preix = balls[i].yspeed
-                preiy = balls[i].xspeed
-                balls[i].xspeed = balls[j].yspeed
-                balls[i].yspeed = balls[j].xspeed
-                balls[j].xspeed = preix
-                balls[j].yspeed = preiy
+                print(str(i) + ' centre at: ' +str(pos[i]) + str(j) + ' centre at: ' + str(pos[j]))
+                print(str(i) +' has mass ' + str(balls[i].mass))
+                print(str(j) +' has mass ' + str(balls[j].mass))
+                
+                massMul = ((balls[i].mass - balls[j].mass)/(balls[i].mass + balls[j].mass))
+                
+                velIfinalx = massMul*balls[i].xspeed + ((2*balls[j].mass)/(balls[i].mass + balls[j].mass))*balls[j].xspeed
+                velIfinaly = massMul*balls[i].yspeed + ((2*balls[j].mass)/(balls[i].mass + balls[j].mass))*balls[j].yspeed
+                velJfinalx = ((2*balls[i].mass)/(balls[i].mass + balls[j].mass))*balls[i].xspeed - massMul*balls[j].xspeed
+                velJfinaly = ((2*balls[i].mass)/(balls[i].mass + balls[j].mass))*balls[i].yspeed - massMul*balls[j].yspeed
+                
+                #elastic collision
+                
+                print('Velcocity magnitude in x & y for i and j: ' + str(velIfinalx) + ':' + str(velIfinaly) + ':' + str(velJfinalx) + ':' + str(velJfinaly))
+                print('   ')
+                
+                balls[i].xspeed = velIfinalx
+                balls[i].yspeed = velIfinaly
+                balls[j].xspeed = velJfinalx
+                balls[j].yspeed = velJfinaly
                 
                 balls[i].x += 1
                 balls[j].x -= 1
                 balls[i].y += 1
                 balls[j].y -= 1
-                #for perfect reflections; elastic collision
+                
+                #slight off set in postion to reduce immdiate recollision
                 
             else:
                 pass
     
                 
             #the logic is that both corners have to be in both bands to collide
-   
     
