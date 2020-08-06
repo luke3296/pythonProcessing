@@ -44,11 +44,11 @@ class ball:
         
         fill(self.col);
         ellipse(self.x, self.y , self.mass,self.mass);
-        #pushStyle();
-        #strokeWeight(2)
-        #line(self.x, self.y, (self.x+ self.xspeed)* arrowSize, (self.y + self.yspeed)*arrowSize);
-        #popStyle();
-        #wow that looks horrible
+        pushStyle();
+        strokeWeight(2)
+        line(self.x, self.y, self.x + self.xspeed + arrowSize, self.y+self.yspeed+arrowSize);
+        popStyle();
+        
         
 
 def setup():
