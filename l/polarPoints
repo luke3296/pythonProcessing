@@ -1,0 +1,55 @@
+#polar space
+width_ = 800;
+height_ = 800;
+
+
+rGlobal = height_ * 0.45;
+thetaGlobal =0.0;
+theta_velGlobal = 0.0;
+theta_accGlobal = 0.0001;
+balls = [];
+class polarBall:
+    def __init__(self,rPos,thetaPos,thetaVel):
+        self.rPos = rPos;
+        self.thetaPos = thetaPos;
+        self.thetaVel = thetaVel;
+        
+    def update(self):
+        self.thetaPos = self.thetaPos + self.thetaVel;
+        
+    def display(self):
+        strokeWeight(5)
+        point(self.rPos * cos(self.thetaPos), self.rPos * sin(self.thetaPos));
+ 
+def setup():
+    size(width_,height_);
+    #rotate(-PI/2);
+    translate(width_/2,height_/2);
+    #frameRate(15);
+    background(209);
+
+
+    
+def draw():
+    global balls;
+    global thetaGlobal;
+    global theta_velGlobal;
+    translate(width_/2, height_/2);
+    #x = r * cos(thetaGlobal);
+    #y = r * sin(thetaGlobal);
+    
+    if mousePressed:
+        balls.append(polarBall(mouseX,mouseY,random(-20,20)));
+        
+    if len(balls) > 0:
+        for i in range(len(balls)):
+            balls[i].update();
+            balls[i].display();
+        
+    
+    theta_velGlobal += theta_accGlobal;
+    thetaGlobal += theta_velGlobal;
+    
+    if keyPressed:
+        balls = [];
+        setup();
