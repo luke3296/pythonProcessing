@@ -1,0 +1,84 @@
+width  = 800
+height = 800
+
+class vector:
+    def __init__(self,direc,magi):
+        self.direction = direc;
+        self.magnitude = magi;
+        self.xComp  = cos(self.direction)*self.magnitude;
+        self.yComp = sin(self.direction)*self.magnitude;
+
+    def update(self):
+        self.xComp  = cos(self.direction)*self.magnitude;
+        self.yComp = sin(self.direction)*self.magnitude;
+
+class boid:
+    def __init__(self,posx,posy):
+        self.x = posx;
+        self.y = posy;
+        self.vel = vector(random(0,2*3),1)
+        self.accel = vector(0,1)
+    
+    def show(self):
+        fill(255)
+        rect(self.x,self.y,10,10)
+    
+    def allign(self):
+        sumdirec = 0
+        numOfNeighbors = 1
+
+        for j in range(len(flock)):
+                
+            distance = 1
+            print('this is distance for' + str(j) + str(distance))
+            if distance == 0:
+                print('caught')
+            elif distance <= 100:
+                degre = flock[j].vel.direction
+                
+                if degre <= 3.14:
+                    sumdirec += degre
+                    numOfNeighbors += 1
+                    print('test')
+                else:
+                    sumdirec += (3.14-degre)*-1
+                    numOfNeighbors += 1
+        
+        avg = sumdirec/numOfNeighbors
+        print('this is sum and num: ' + str(sumdirec) +'  ' + str(numOfNeighbors))
+        return avg            
+        
+    
+    def update(self):
+        self.vel.update()
+
+        if self.x > width+15:
+            self.x = 0;
+        if self.y > height+15:
+            self.y = 0;
+        if self.x < -15:
+            self.x = width;
+        if self.y < -15:
+            self.y = height;
+
+        self.x = self.x + self.vel.xComp
+        self.y =self.y + self.vel.yComp;
+        self.vel.direction += 0.01 
+        print(self.vel.direction)
+        print('this is the allign' + str(self.allign()))
+
+flock = []
+
+def setup():
+    size(height,width);
+    background(240);
+    for i in range(0,20):
+        flock.append(boid(random(100,700),random(100,700)))
+    
+
+
+def draw():
+    #background(255)
+    for i in range(len(flock)):
+        flock[i].update()
+        flock[i].show()
