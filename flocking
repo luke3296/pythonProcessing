@@ -16,7 +16,7 @@ class boid:
     def __init__(self,posx,posy):
         self.x = posx;
         self.y = posy;
-        self.vel = vector(random(0,2*3),1)
+        self.vel = vector(random(0,6),1)
         self.accel = vector(0,1)
     
     def show(self):
@@ -30,22 +30,18 @@ class boid:
         for j in range(len(flock)):
                 
             distance = 1
-            print('this is distance for' + str(j) + str(distance))
             if distance == 0:
-                print('caught')
             elif distance <= 100:
                 degre = flock[j].vel.direction
                 
-                if degre <= 3.14:
+                if degre <= 3:
                     sumdirec += degre
                     numOfNeighbors += 1
-                    print('test')
                 else:
-                    sumdirec += (3.14-degre)*-1
+                    sumdirec += (3-degre)*-1
                     numOfNeighbors += 1
         
         avg = sumdirec/numOfNeighbors
-        print('this is sum and num: ' + str(sumdirec) +'  ' + str(numOfNeighbors))
         return avg            
         
     
@@ -63,16 +59,17 @@ class boid:
 
         self.x = self.x + self.vel.xComp
         self.y =self.y + self.vel.yComp;
-        self.vel.direction += 0.01 
-        print(self.vel.direction)
-        print('this is the allign' + str(self.allign()))
+        self.vel.direction = self.allign()
+        if random(-109,10) > 0:
+            self.vel.direction = random(0,6)
+        #random motion to prove allign works
 
 flock = []
 
 def setup():
     size(height,width);
     background(240);
-    for i in range(0,20):
+    for i in range(0,10):
         flock.append(boid(random(100,700),random(100,700)))
     
 
@@ -82,3 +79,4 @@ def draw():
     for i in range(len(flock)):
         flock[i].update()
         flock[i].show()
+
