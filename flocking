@@ -31,38 +31,43 @@ class boid:
             
             same = True
                 
-            distance = sqrt(abs((int((self.x - flock[j].x))^2 + int((self.y - flock[j].y))^2)))
-            print(distance)
-            if distance == 0:
+            distancex = abs(self.x - flock[j].x)
+            distancey = abs(self.y - flock[j].y)
+            
+            distancecomb = distancex + distancey
+
+            if distancecomb == 0:
                 same = False
                 
-            elif distance <= 5 and same:
+            elif distancecomb <= 30 and same:
                 degre = flock[j].vel.direction
                 sumdirec += degre
                 numOfNeighbors += 1
         
+        #if sumdirec == 0 and numOfNeighbors == 0:
+         #   avg = self.vel.direction
+        #else:
         avg = sumdirec/numOfNeighbors
-        print(avg)
         return avg            
         
     
     def update(self):
         self.vel.update()
 
-        if self.x > width+15:
+        if self.x > width:
             self.x = 0;
-        if self.y > height+15:
+        if self.y > height:
             self.y = 0;
-        if self.x < -15:
+        if self.x < 0:
             self.x = width;
-        if self.y < -15:
+        if self.y < 0:
             self.y = height;
 
         self.x = self.x + self.vel.xComp
         self.y =self.y + self.vel.yComp;
-        self.vel.direction = self.allign()
+        self.vel.direction = (self.vel.direction + self.allign())/2
         #if random(-10,10) < 0:
-           # self.vel.direction = random(0,6)
+           #self.vel.direction += 0.01
         #random motion to prove allign works
 
 flock = []
@@ -76,8 +81,7 @@ def setup():
 
 
 def draw():
-    #background(255)
+    background(255)
     for i in range(len(flock)):
         flock[i].update()
         flock[i].show()
-
