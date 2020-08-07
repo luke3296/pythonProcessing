@@ -16,7 +16,7 @@ class boid:
     def __init__(self,posx,posy):
         self.x = posx;
         self.y = posy;
-        self.vel = vector(random(0,6),1)
+        self.vel = vector(random(0,6.28),1)
         self.accel = vector(0,1)
     
     def show(self):
@@ -24,24 +24,25 @@ class boid:
         rect(self.x,self.y,10,10)
     
     def allign(self):
-        sumdirec = 0
+        sumdirec = self.vel.direction
         numOfNeighbors = 1
 
         for j in range(len(flock)):
+            
+            same = True
                 
-            distance = 1
+            distance = sqrt(abs((int((self.x - flock[j].x))^2 + int((self.y - flock[j].y))^2)))
+            print(distance)
             if distance == 0:
-            elif distance <= 100:
-                degre = flock[j].vel.direction
+                same = False
                 
-                if degre <= 3:
-                    sumdirec += degre
-                    numOfNeighbors += 1
-                else:
-                    sumdirec += (3-degre)*-1
-                    numOfNeighbors += 1
+            elif distance <= 5 and same:
+                degre = flock[j].vel.direction
+                sumdirec += degre
+                numOfNeighbors += 1
         
         avg = sumdirec/numOfNeighbors
+        print(avg)
         return avg            
         
     
@@ -60,8 +61,8 @@ class boid:
         self.x = self.x + self.vel.xComp
         self.y =self.y + self.vel.yComp;
         self.vel.direction = self.allign()
-        if random(-109,10) > 0:
-            self.vel.direction = random(0,6)
+        #if random(-10,10) < 0:
+           # self.vel.direction = random(0,6)
         #random motion to prove allign works
 
 flock = []
