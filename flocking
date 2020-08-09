@@ -16,7 +16,7 @@ class boid:
     def __init__(self,posx,posy):
         self.x = posx;
         self.y = posy;
-        self.vel = vector(random(0,6.28),1)
+        self.vel = vector(random(0,6.28),5)
         self.accel = vector(0,1)
     
     def show(self):
@@ -48,12 +48,59 @@ class boid:
          #   avg = self.vel.direction
         #else:
         avg = sumdirec/numOfNeighbors
-        return avg            
+        steering = avg - self.vel.direction
         
+        cap = 0.5
+        
+        if steering > cap:
+            steering = cap
+        elif steering < -cap:
+            steering = -cap
+        return steering
     
+    def cohesion(self):
+        sumdirecx = self.x
+        sumdirecy = self.y
+        numOfNeighbors = 1
+
+        for j in range(len(flock)):
+            
+            same = True
+                
+            distancex = abs(self.x - flock[j].x)
+            distancey = abs(self.y - flock[j].y)
+            
+            distancecomb = distancex + distancey
+
+            if distancecomb == 0:
+                same = False
+                
+            elif distancecomb <= 30 and same:
+                degre = flock[j].x
+                sumdirecx += flock[j].x
+                sumdirecy += flock[j].y
+                numOfNeighbors += 1
+        
+        #if sumdirec == 0 and numOfNeighbors == 0:
+         #   avg = self.vel.direction
+        #else:
+        avgx = sumdirecx/numOfNeighbors
+        avgy = sumdirecy/numOfNeighbors
+        
+        xdirc = avgx - self.x
+        ydirc = avgy - self.y
+        
+        if avgx == 0:
+            direcToTurn = 0
+        else:
+            direcToTurn = atan(avgy/avgx)
+        
+        return direcToTurn*0.001
+
     def update(self):
         self.vel.update()
-
+        self.accel.update()
+        
         if self.x > width:
             self.x = 0;
         if self.y > height:
@@ -63,11 +110,17 @@ class boid:
         if self.y < 0:
             self.y = height;
 
-        self.x = self.x + self.vel.xComp
-        self.y =self.y + self.vel.yComp;
-        self.vel.direction = (self.vel.direction + self.allign())/2
+        self.accel.direction = self.allign() + self.cohesion()
+        self.vel.direction = self.vel.direction + self.accel.direction
+        sda = self.cohesion()
+        print(sda)
+        
+        self.vel.direction = self.vel.direction + self.accel.direction
+        self.x = self.x + self.vel.xComp #+ cords[0]
+        self.y =self.y + self.vel.yComp
+        
         #if random(-10,10) < 0:
-           #self.vel.direction += 0.01
+           #self.vel.direction += random(-0.1,0.1)
         #random motion to prove allign works
 
 flock = []
@@ -75,7 +128,7 @@ flock = []
 def setup():
     size(height,width);
     background(240);
-    for i in range(0,10):
+    for i in range(0,50):
         flock.append(boid(random(100,700),random(100,700)))
     
 
