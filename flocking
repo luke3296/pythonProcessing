@@ -50,12 +50,7 @@ class boid:
         avg = sumdirec/numOfNeighbors
         steering = avg - self.vel.direction
         
-        cap = 0.5
-        
-        if steering > cap:
-            steering = cap
-        elif steering < -cap:
-            steering = -cap
+
         return steering
     
     def cohesion(self):
@@ -90,16 +85,60 @@ class boid:
         xdirc = avgx - self.x
         ydirc = avgy - self.y
         
-        if avgx == 0:
+        if xdirc == 0:
             direcToTurn = 0
         else:
-            direcToTurn = atan(avgy/avgx)
+            direcToTurn = atan(ydirc/xdirc)
         
-        return direcToTurn*0.001
+        return direcToTurn
+
+
+    def separation(self):
+        avg = 0
+        direcToTurn = 0
+        numOfNeibors = 1
+        
+        for j in range(len(flock)):
+            
+            same = True
+                
+            distancex = abs(self.x - flock[j].x)
+            distancey = abs(self.y - flock[j].y)
+            
+            distancecomb = distancex + distancey
+            #direcToTurn = self.vel.direction
+            
+            if distancecomb == 0:
+                same = False
+                
+            elif distancecomb <= 30 and same:
+                xdirc = flock[j].x - self.x
+                ydirc = flock[j].y - self.y
+                
+                numOfNeibors +=1
+                
+                if xdirc == 0:
+                    pass
+                else:    
+                    avoidNei = (atan(ydirc/xdirc)*-1)
+                    numToAdd = 31 - distancecomb
+                    for i in range(int(numToAdd)):
+                        direcToTurn += avoidNei
+        
+        avg = direcToTurn/numOfNeibors
+        
+        return avg
 
     def update(self):
         self.vel.update()
         self.accel.update()
+        
+        #print('allign')
+        #print(self.allign())
+        #print('cohesion')
+        #print(self.cohesion())
+        #print('separation')
+        #print(self.separation())
         
         if self.x > width:
             self.x = 0;
@@ -109,13 +148,12 @@ class boid:
             self.x = width;
         if self.y < 0:
             self.y = height;
-
-        self.accel.direction = self.allign() + self.cohesion()
-        self.vel.direction = self.vel.direction + self.accel.direction
-        sda = self.cohesion()
-        print(sda)
         
+        cap = 0.1
+        self.accel.direction = self.allign() + self.separation()*cap + self.cohesion()*cap*cap*cap*cap*cap*cap*cap*cap
+        print(self.accel.direction)
         self.vel.direction = self.vel.direction + self.accel.direction
+        self.accel.direction = 0
         self.x = self.x + self.vel.xComp #+ cords[0]
         self.y =self.y + self.vel.yComp
         
