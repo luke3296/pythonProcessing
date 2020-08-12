@@ -1,0 +1,51 @@
+width = 800
+height = 800
+
+def setup():
+    size(width,height)
+    background(255)
+
+freq = 80
+
+def perlinNoise():
+    start = random(0,1)
+
+    smootNoise =[start]
+
+    for i in range(0,freq):
+        
+        valueToBuild = smootNoise[i]
+        
+        if smootNoise[i] <= 0:
+            smootNoise.append(random(0,0.03))
+        elif smootNoise[i] >= 1:
+            smootNoise.append(random(0.97,1))
+        else:
+            smootNoise.append(random(valueToBuild-0.01,valueToBuild+0.01))
+
+    return smootNoise
+
+
+def makeMap():
+    for i in range(0,800,10):
+        PerlinList = perlinNoise()
+        ndPlist = perlinNoise()
+        ndPlist.sort()
+        smallest = ndPlist[0]
+        biggest  = ndPlist[len(ndPlist)-1]
+        midpoint = smallest + (biggest-smallest)/2
+        print(str(smallest)+'   ' +  str(biggest) +'    '+str(midpoint))
+        for j in range(0,800,10):
+            if PerlinList[j/10] < 0.5:
+                pass
+            else:
+                fill(color(random(0,255),random(0,255),random(0,255)))
+                rect(j,i,5,5)
+
+
+def draw():
+    
+    if mousePressed:
+     background(255)
+     makeMap()
+    pass
