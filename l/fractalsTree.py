@@ -29,7 +29,8 @@ def draw():
         if key == 'a':
             branch_num += 5;
         elif key == 'd':
-            branch_num -= 5;
+            if branch_num > 0:
+                branch_num -= 5;
         elif key == 'w':
             if branch_ratio < 0.8:
                 branch_ratio += 0.01;
@@ -69,5 +70,9 @@ def mousePressed():
         angle -= 0.1;
     elif mouseButton == RIGHT:
         angle += 0.1;
+
+
+
+
 
 
