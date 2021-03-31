@@ -1,3 +1,4 @@
+
 angle = 80;
 branch_ratio = 0.67;
 branch_num = 50;
@@ -30,9 +31,11 @@ def draw():
         elif key == 'd':
             branch_num -= 5;
         elif key == 'w':
-            branch_ratio += 0.01;
+            if branch_ratio < 0.8:
+                branch_ratio += 0.01;
         elif key == 's':
-            branch_ratio -= 0.01;
+            if branch_ratio > -1:
+                branch_ratio -= 0.01;
         elif key == 'r':
             if(feature_size > 2):
                 feature_size -= 1;
@@ -66,3 +69,5 @@ def mousePressed():
         angle -= 0.1;
     elif mouseButton == RIGHT:
         angle += 0.1;
+
+
